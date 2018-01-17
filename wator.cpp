@@ -68,7 +68,7 @@ class Grid
 
 
 int numberOfFish = 25; //Fish starting in Grid
-int numberOfSharks = 4 //Sharks Starting in Grid
+int numberOfSharks = 4; //Sharks Starting in Grid
 int const width = 20; //Width of Grid
 int const height = 20; //Height of grid
 int randomWidthPosition = 0; //For object position in grid (width) (random)
