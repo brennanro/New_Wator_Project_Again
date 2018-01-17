@@ -12,7 +12,7 @@ using namespace std;
 // Creating the objects for each of the objects
 char water = '~';
 char BruceShark = '^';
-char Marlinfish = 'F';
+char MarlinFish = 'F';
 
 
 class Grid
