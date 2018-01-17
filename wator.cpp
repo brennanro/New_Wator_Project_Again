@@ -1,3 +1,12 @@
+/*Rónán Brennan
+  Wator Project
+  28/12/2017
+*/
+
+
+
+
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -9,30 +18,30 @@
 
 using namespace std;
 
-// Creating the objects for each of the objects
-char water = '~';
-char BruceShark = '^';
-char MarlinFish = 'F';
+
+char water = '~'; //water and it's symbol used for the grid
+char BruceShark = '^'; //Shark and it's symbol
+char MarlinFish = 'F'; //Fish and it's symbol
 
 
 class Grid
 {
 	public:
-    	char object;
-    	int ageLevel;
-    	int hungerLevel;
-    	bool handled;
+    	char object; //object: water, fish or shark
+    	int ageLevel; // age of shark or fish
+    	int hungerLevel; //hunger of shark or fished
+    	bool handled; // handled can be true or false (boolean)
 
-	// Constructor for the Grid.
-    Grid()
+	
+    Grid() // water constructed in grid
 	{
     	object = water;
     	ageLevel = 0;
     	hungerLevel = 0;
    	}
 
-	// Contstructor for types: MarlinFish and Sharks
-    Grid(char type)
+	
+    Grid(char type) //Allows for Fish and Sharks in grid
 	{
 		 if(type == water)
 	  		{
@@ -58,27 +67,27 @@ class Grid
 };
 
 
-int numberOfFish = 30;
-int numberOfSharks = 2;
-int const width = 15;
-int const height = 15;
-int randomWidthPosition = 0;
-int randomHeightPosition = 0;
-int movesToBreedFish = 4;
-int movesToBreedShark = 6;
+int numberOfFish = 25; //Fish starting in Grid
+int numberOfSharks = 4 //Sharks Starting in Grid
+int const width = 20; //Width of Grid
+int const height = 20; //Height of grid
+int randomWidthPosition = 0; //For object position in grid (width) (random)
+int randomHeightPosition = 0; //For object position in grid (height) (random)
+int movesToBreedFish = 4; //Moves for fish to breed
+int movesToBreedShark = 8; //Moves for Shark to breed
 
 
-//creating the ocean grid
-void createGrid(vector<vector<Grid>> &ocean )
+
+void createGrid(vector<vector<Grid>> &ocean ) //Making Ocean (Grid)
 {
-	system("clear");
+	
 
 		for(int i = 0; i < height; i++)
 	    {
 	  
 	        for(int j= 0; j < width; j++)
 	            {
-					cout << ocean[j][i].object;
+					cout << ocean[j][i].object;//nested for loop while i and j are less than width and height
 					
 		    	}
 
@@ -87,11 +96,11 @@ void createGrid(vector<vector<Grid>> &ocean )
 	 
 }
 
-//METHOD -- Used to fill grid with MarlinFish and sharks.
-void fill(vector<vector<Grid>> &ocean , int numberOfFish, int numberOfSharks)
+
+void fill(vector<vector<Grid>> &ocean , int numberOfFish, int numberOfSharks) //fills the ocean with fish and Sharks
 {
-	//Checking for available space for MarlinFish
-	while (numberOfFish > 0)
+	
+	while (numberOfFish > 0) 
 	{
 	    randomWidthPosition = rand() % width;
 	    randomHeightPosition = rand() % height;
@@ -99,10 +108,10 @@ void fill(vector<vector<Grid>> &ocean , int numberOfFish, int numberOfSharks)
 	    {
 			ocean[randomWidthPosition][randomHeightPosition] = Grid(MarlinFish);
 			--numberOfFish;
-	    }
+	    } //Checks for space for fish and puts them in where space appears (where space is water not shark)
 	    	
 	}
-	//Checking for available space for sharks
+
 	while (numberOfSharks > 0)
 	{
 	    randomWidthPosition = rand() % width;
@@ -111,11 +120,11 @@ void fill(vector<vector<Grid>> &ocean , int numberOfFish, int numberOfSharks)
 	    {
 			ocean[randomWidthPosition][randomHeightPosition] = Grid(BruceShark);
 			--numberOfSharks;
-	    }
+	    } //same as fish explanation except shark
 	}
 }
 
-bool checkArea(vector<vector<Grid>> &ocean , int x ,int y)
+bool checkArea(vector<vector<Grid>> &ocean , int x ,int y) // check surrounding area
 {
 
 	if (x < 0 || x >= width)
@@ -148,8 +157,8 @@ bool checkArea(vector<vector<Grid>> &ocean , int x ,int y)
 		return true;
 
 	}
-	// Stopping a BruceShark from overlapping another BruceShark. 
-	if(ocean[x][y].object == BruceShark)
+	 
+	if(ocean[x][y].object == BruceShark) //shark can't eat shark
 	{
 		return false;
 	}
@@ -159,7 +168,7 @@ bool checkArea(vector<vector<Grid>> &ocean , int x ,int y)
 	}
 }
 
-bool checkFishArea(vector<vector<Grid>> &ocean , int x ,int y)
+bool checkFishArea(vector<vector<Grid>> &ocean , int x ,int y) //check Fish in surrounding area
 {
 	if (x < 0 || x >= width)
 	{
@@ -184,8 +193,8 @@ bool checkFishArea(vector<vector<Grid>> &ocean , int x ,int y)
 			y = 0;
 		}
 	}
-	//If there is a MarlinFish close the BruceShark will go
-	if(ocean[x][y].object == MarlinFish)
+	
+	if(ocean[x][y].object == MarlinFish) //shark will try eat fish
 	{
 		return true;
 
@@ -198,54 +207,53 @@ bool checkFishArea(vector<vector<Grid>> &ocean , int x ,int y)
 
 }
 	
-// Method for the next move of the MarlinFish
-void moveFish(vector<vector<Grid>> &ocean , int x ,int y)
+
+void moveMarlinFish(vector<vector<Grid>> &ocean , int x ,int y) //picks direction for fish to move 
 {
 
-	//creating variables for the next available position 
 	bool forward = checkArea(ocean, x , y -1 );
 	bool back  = checkArea(ocean, x , y + 1 );
 	bool left  = checkArea(ocean, x -1 , y);
 	bool right  = checkArea(ocean, x +1, y);
 	int move = 0;
 
-	if(forward || back || left || right)
+	if(forward || back || left || right)  //fish can move
 	{
 		move = 1;
 	}
 
-	if(move == 0)
+	if(move == 0) //fish can't move
 	{
 		ocean[x][y].ageLevel++;
 		ocean[x][y].handled = true;
 	}
 	else	
 	{   
-		//creating this varible to make a random move.
+		
 		while (move > 0)
 		{
-			int direction = rand() % 4; 
+			int direction = rand() % 4; //picks random place for fish to move
 
-			if (direction == 0 && forward)
+			if (direction == 0 && forward) //forward
 			{
 				int nextPosition = y - 1;
 				if(nextPosition < 0)
 				{
 					nextPosition = width - 1;
 				}
-				ocean[x][nextPosition] = ocean[x][y];
+				ocean[x][nextPosition] = ocean[x][y]; //new position
 				ocean[x][nextPosition].handled = true;
-				ocean[x][nextPosition].ageLevel++;
+				ocean[x][nextPosition].ageLevel++; //fish gets older
 				ocean[x][y] = Grid();
 				move = 0;
-				if(ocean[x][nextPosition].ageLevel >= movesToBreedFish)
+				if(ocean[x][nextPosition].ageLevel >= movesToBreedFish) //fish will breed if greater than number of moves needed to breed
 				{
 					ocean[x][y] = Grid(MarlinFish);
 					ocean[x][nextPosition].ageLevel = 0;
 					numberOfFish++;
 				}
 			}
-			else if (direction == 1 && back)
+			else if (direction == 1 && back) //similar to forward except back
 			{
 				int nextPosition = y + 1;
 				if(nextPosition >= width)
@@ -265,7 +273,7 @@ void moveFish(vector<vector<Grid>> &ocean , int x ,int y)
 					numberOfFish++;
 				}
 			}
-			else if (direction == 2 && left)
+			else if (direction == 2 && left)//similar again
 			{
 				int nextPosition = x - 1;
 				if(nextPosition < 0)
@@ -284,7 +292,7 @@ void moveFish(vector<vector<Grid>> &ocean , int x ,int y)
 					numberOfFish++;
 				}		
 			}
-			else if (direction == 3 && right)
+			else if (direction == 3 && right) //and again
 			{
 				int nextPosition = x + 1 ;
 				if(nextPosition >= height)
@@ -308,10 +316,10 @@ void moveFish(vector<vector<Grid>> &ocean , int x ,int y)
 	
 	
 }
-// Method for the next move of the BruceShark
-void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
+
+void moveBruceShark(vector<vector<Grid>> &ocean , int x ,int y) //when a shark eats a fish
 {
-	//creating variables for the next available position 
+	
 	bool forward = checkFishArea(ocean, x , y -1 );
 	bool back  = checkFishArea(ocean, x , y + 1 );
 	bool left  = checkFishArea(ocean, x -1 , y);
@@ -319,12 +327,12 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 	int move = 0;
    	
 	
-	// VALIDATION -- if a BruceShark eats a MarlinFish
+	
 	if(forward || back || left || right)
 	{
 		move = 1;
 		
-		//creating this varible to make a random move.
+		
 		while (move > 0)
 		{
 			int direction = rand() % 4; 
@@ -336,20 +344,14 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				{
 					nextPosition = width - 1;
 				}
-				ocean[x][nextPosition] = ocean[x][y]; //moves the BruceShark or MarlinFish
+				ocean[x][nextPosition] = ocean[x][y]; 
 				ocean[x][nextPosition].handled = true;
 				ocean[x][nextPosition].ageLevel++;
-				ocean[x][nextPosition].hungerLevel = 0;
+				ocean[x][nextPosition].hungerLevel = 0; //shark also has hunger level. Resets to zero when fish is eaten
 				numberOfFish--;
 				ocean[x][y] = Grid();
 				move = 0;
 
-				if(ocean[x][nextPosition].hungerLevel == 4)
-				{
-					ocean[x][nextPosition] = Grid();
-					numberOfSharks--;
-				}
-				
 				if(ocean[x][nextPosition].ageLevel >= movesToBreedShark)
 				{
 					ocean[x][y] = Grid(BruceShark);
@@ -373,13 +375,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				numberOfFish--;
 				ocean[x][y] = Grid();
 				move = 0;
-
-				if(ocean[x][nextPosition].hungerLevel == 4)
-				{
-					ocean[x][nextPosition]= Grid();
-					numberOfSharks--;
-				}
-			
+				
 				if(ocean[x][nextPosition].ageLevel >= movesToBreedShark)
 				{
 					ocean[x][y] = Grid(BruceShark);
@@ -405,13 +401,6 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				ocean[x][y] = Grid();
 				move = 0;
 
-				if(ocean[nextPosition][y].hungerLevel == 4)
-				{
-					ocean[nextPosition][y]= Grid();
-					numberOfSharks--;
-					
-				}
-				
 				if(ocean[nextPosition][y].ageLevel >= movesToBreedShark)
 				{
 					ocean[x][y] = Grid(BruceShark);
@@ -446,7 +435,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 			}	
 	}
 }
-	else
+	else //if shark moves to water instead of fish
 	{
 		forward = checkArea(ocean, x , y -1 );
 		back  = checkArea(ocean, x , y + 1 );
@@ -464,7 +453,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 		ocean[x][y].ageLevel++;
 		ocean[x][y].hungerLevel++;
 
-		if(ocean[x][y].hungerLevel == 4)
+		if(ocean[x][y].hungerLevel == 5)
 				{
 					ocean[x][y] = Grid();
 					numberOfSharks--;
@@ -474,7 +463,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 	}
 	else
    	{
-		//creating this varible to make a random move.
+		
 		while (move > 0)
 		{
 			int direction = rand() % 4; 
@@ -486,14 +475,14 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				{
 					nextPosition = width - 1;
 				}
-				ocean[x][nextPosition] = ocean[x][y]; //moves the BruceShark or MarlinFish
+				ocean[x][nextPosition] = ocean[x][y]; 
 				ocean[x][nextPosition].handled = true;
 				ocean[x][nextPosition].ageLevel++;
 				ocean[x][nextPosition].hungerLevel++;
 				ocean[x][y] = Grid();
 				move = 0;
 
-				if(ocean[x][nextPosition].hungerLevel == 4)
+				if(ocean[x][nextPosition].hungerLevel == 5)
 				{
 					ocean[x][nextPosition] = Grid();
 					numberOfSharks--;
@@ -521,7 +510,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				ocean[x][y] = Grid();
 				move = 0;
 
-				if(ocean[x][nextPosition].hungerLevel == 4)
+				if(ocean[x][nextPosition].hungerLevel == 5)
 				{
 					ocean[x][nextPosition]= Grid();
 					numberOfSharks--;
@@ -550,7 +539,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				ocean[x][y] = Grid();
 				move = 0;
 
-				if(ocean[nextPosition][y].hungerLevel == 4)
+				if(ocean[nextPosition][y].hungerLevel == 5)
 				{
 					ocean[nextPosition][y]= Grid();
 					numberOfSharks--;
@@ -583,7 +572,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 				ocean[x][y] = Grid();
 				move = 0;
 
-				if(ocean[nextPosition][y].hungerLevel == 4)
+				if(ocean[nextPosition][y].hungerLevel == 5)
 				{
 					ocean[nextPosition][y]= Grid();
 					numberOfSharks--;
@@ -602,7 +591,7 @@ void moveShark(vector<vector<Grid>> &ocean , int x ,int y)
 	}
 	
 }
-void allowMovement(vector<vector<Grid>> &ocean )
+void allowMovement(vector<vector<Grid>> &ocean ) //if fish and shark has not been handled (==false) move fish and Shark
 {
 	for(int i = 0; i < height; i++)
     {
@@ -612,12 +601,12 @@ void allowMovement(vector<vector<Grid>> &ocean )
             	{
             		if(ocean[j][i].object == MarlinFish)
 	            	{
-	            		//move MarlinFish
-	            		moveFish(ocean, j, i);
+	            		
+	            		moveMarlinFish(ocean, j, i);
 	            	}
 	            	else if (ocean[j][i].object == BruceShark)
 	            	{
-	            		moveShark(ocean, j,i);
+	            		moveBruceShark(ocean, j,i);
 	            	}
 	            	else
 	            	{
@@ -627,18 +616,18 @@ void allowMovement(vector<vector<Grid>> &ocean )
             }
     }
 }
-void resetFish(vector<vector<Grid>> &ocean)
+void reconstructMarlinFish(vector<vector<Grid>> &ocean)
 {
 	for(int i = 0; i < width; i++)
     {
         for(int j= 0; j < height; j++)
             {
-				ocean[i][j].handled = false;
+				ocean[i][j].handled = false; //reconstructs marlin fish
 	    	}
     }
 }
 
-int main(void) 
+int main(void) //creates and fills ocean and carries out Wator Simulation
 {
 	srand(time(NULL));
 	vector<vector<Grid>> ocean ;
@@ -650,16 +639,16 @@ int main(void)
 	}
    	
 	fill(ocean, numberOfFish, numberOfSharks);
-	int i = 1;
+	
 
-	while(true)
+	while(true)  
 	{
 		
 
-		resetFish(ocean);
+		reconstructMarlinFish(ocean);
 		createGrid(ocean);
 		allowMovement(ocean);
-		this_thread::sleep_for(chrono::milliseconds(250));
+		this_thread::sleep_for(chrono::milliseconds(250)); //sleeps for 250ms
 
 	}
 }
